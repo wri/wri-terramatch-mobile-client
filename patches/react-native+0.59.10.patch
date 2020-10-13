@@ -1,0 +1,208 @@
+diff --git a/node_modules/react-native/Libraries/Text/RCTTextAttributes.h b/node_modules/react-native/Libraries/Text/RCTTextAttributes.h
+index 01070aa..e658c36 100644
+--- a/node_modules/react-native/Libraries/Text/RCTTextAttributes.h
++++ b/node_modules/react-native/Libraries/Text/RCTTextAttributes.h
+@@ -34,6 +34,7 @@ extern NSString *const RCTTextAttributesTagAttributeName;
+ @property (nonatomic, assign) CGFloat maxFontSizeMultiplier;
+ @property (nonatomic, copy, nullable) NSString *fontWeight;
+ @property (nonatomic, copy, nullable) NSString *fontStyle;
++@property (nonatomic, copy, nullable) NSNumber *fontCondensed;
+ @property (nonatomic, copy, nullable) NSArray<NSString *> *fontVariant;
+ @property (nonatomic, assign) BOOL allowFontScaling;
+ @property (nonatomic, assign) CGFloat letterSpacing;
+diff --git a/node_modules/react-native/Libraries/Text/RCTTextAttributes.m b/node_modules/react-native/Libraries/Text/RCTTextAttributes.m
+index ed95918..14f3206 100644
+--- a/node_modules/react-native/Libraries/Text/RCTTextAttributes.m
++++ b/node_modules/react-native/Libraries/Text/RCTTextAttributes.m
+@@ -48,6 +48,7 @@ - (void)applyTextAttributes:(RCTTextAttributes *)textAttributes
+ 
+   // Font
+   _fontFamily = textAttributes->_fontFamily ?: _fontFamily;
++  _fontCondensed = textAttributes->_fontCondensed ?: _fontCondensed;
+   _fontSize = !isnan(textAttributes->_fontSize) ? textAttributes->_fontSize : _fontSize;
+   _fontSizeMultiplier = !isnan(textAttributes->_fontSizeMultiplier) ? textAttributes->_fontSizeMultiplier : _fontSizeMultiplier;
+   _maxFontSizeMultiplier = !isnan(textAttributes->_maxFontSizeMultiplier) ? textAttributes->_maxFontSizeMultiplier : _maxFontSizeMultiplier;
+@@ -186,6 +187,7 @@ - (UIFont *)effectiveFont
+                   withFamily:_fontFamily
+                         size:@(isnan(_fontSize) ? 0 : _fontSize)
+                       weight:_fontWeight
++                   condensed:_fontCondensed
+                        style:_fontStyle
+                      variant:_fontVariant
+              scaleMultiplier:self.effectiveFontSizeMultiplier];
+@@ -270,6 +272,7 @@ - (BOOL)isEqual:(RCTTextAttributes *)textAttributes
+     RCTTextAttributesCompareObjects(_fontFamily) &&
+     RCTTextAttributesCompareFloats(_fontSize) &&
+     RCTTextAttributesCompareFloats(_fontSizeMultiplier) &&
++    RCTTextAttributesCompareObjects(_fontCondensed) &&
+     RCTTextAttributesCompareFloats(_maxFontSizeMultiplier) &&
+     RCTTextAttributesCompareStrings(_fontWeight) &&
+     RCTTextAttributesCompareObjects(_fontStyle) &&
+diff --git a/node_modules/react-native/Libraries/Text/Text/RCTTextViewManager.m b/node_modules/react-native/Libraries/Text/Text/RCTTextViewManager.m
+index 9e0af36..efa79be 100644
+--- a/node_modules/react-native/Libraries/Text/Text/RCTTextViewManager.m
++++ b/node_modules/react-native/Libraries/Text/Text/RCTTextViewManager.m
+@@ -33,6 +33,11 @@ @implementation RCTTextViewManager
+ RCT_REMAP_SHADOW_PROPERTY(adjustsFontSizeToFit, adjustsFontSizeToFit, BOOL)
+ RCT_REMAP_SHADOW_PROPERTY(minimumFontScale, minimumFontScale, CGFloat)
+ 
++RCT_CUSTOM_SHADOW_PROPERTY(fontCondensed, BOOL, RCTTextShadowView) {
++  view.textAttributes.fontCondensed = [NSNumber numberWithBool: [RCTConvert BOOL:json]];
++}
++
++
+ RCT_EXPORT_SHADOW_PROPERTY(onTextLayout, RCTDirectEventBlock)
+ 
+ RCT_EXPORT_VIEW_PROPERTY(selectable, BOOL)
+diff --git a/node_modules/react-native/Libraries/Text/TextInput/Multiline/RCTMultilineTextInputViewManager.m b/node_modules/react-native/Libraries/Text/TextInput/Multiline/RCTMultilineTextInputViewManager.m
+index b086dfa..91f74e4 100644
+--- a/node_modules/react-native/Libraries/Text/TextInput/Multiline/RCTMultilineTextInputViewManager.m
++++ b/node_modules/react-native/Libraries/Text/TextInput/Multiline/RCTMultilineTextInputViewManager.m
+@@ -8,11 +8,16 @@
+ #import "RCTMultilineTextInputViewManager.h"
+ 
+ #import "RCTMultilineTextInputView.h"
++#import "RCTTextAttributes.h"
+ 
+ @implementation RCTMultilineTextInputViewManager
+ 
+ RCT_EXPORT_MODULE()
+ 
++RCT_CUSTOM_SHADOW_PROPERTY(fontCondensed, BOOL, RCTMultilineTextInputView) {
++  view.textAttributes.fontCondensed = [NSNumber numberWithBool: [RCTConvert BOOL:json]];
++}
++
+ - (UIView *)view
+ {
+   return [[RCTMultilineTextInputView alloc] initWithBridge:self.bridge];
+diff --git a/node_modules/react-native/Libraries/Text/TextInput/RCTBaseTextInputViewManager.m b/node_modules/react-native/Libraries/Text/TextInput/RCTBaseTextInputViewManager.m
+index d226782..04eb432 100644
+--- a/node_modules/react-native/Libraries/Text/TextInput/RCTBaseTextInputViewManager.m
++++ b/node_modules/react-native/Libraries/Text/TextInput/RCTBaseTextInputViewManager.m
+@@ -69,7 +69,6 @@ @implementation RCTBaseTextInputViewManager
+ RCT_EXPORT_SHADOW_PROPERTY(placeholder, NSString)
+ RCT_EXPORT_SHADOW_PROPERTY(onContentSizeChange, RCTBubblingEventBlock)
+ 
+-
+ - (RCTShadowView *)shadowView
+ {
+   RCTBaseTextInputShadowView *shadowView = [[RCTBaseTextInputShadowView alloc] initWithBridge:self.bridge];
+diff --git a/node_modules/react-native/Libraries/Text/TextInput/Singleline/RCTSinglelineTextInputViewManager.m b/node_modules/react-native/Libraries/Text/TextInput/Singleline/RCTSinglelineTextInputViewManager.m
+index 5a2af1c..f3f52d4 100644
+--- a/node_modules/react-native/Libraries/Text/TextInput/Singleline/RCTSinglelineTextInputViewManager.m
++++ b/node_modules/react-native/Libraries/Text/TextInput/Singleline/RCTSinglelineTextInputViewManager.m
+@@ -14,6 +14,10 @@ @implementation RCTSinglelineTextInputViewManager
+ 
+ RCT_EXPORT_MODULE()
+ 
++RCT_CUSTOM_SHADOW_PROPERTY(fontCondensed, BOOL, RCTSinglelineTextInputView) {
++  view.textAttributes.fontCondensed = [NSNumber numberWithBool: [RCTConvert BOOL:json]];
++}
++
+ - (RCTShadowView *)shadowView
+ {
+   RCTBaseTextInputShadowView *shadowView =
+diff --git a/node_modules/react-native/Libraries/Text/TextStylePropTypes.js b/node_modules/react-native/Libraries/Text/TextStylePropTypes.js
+index d4755ef..c8ecd42 100644
+--- a/node_modules/react-native/Libraries/Text/TextStylePropTypes.js
++++ b/node_modules/react-native/Libraries/Text/TextStylePropTypes.js
+@@ -18,6 +18,7 @@ const TextStylePropTypes = {
+   ...DeprecatedViewStylePropTypes,
+ 
+   color: DeprecatedColorPropType,
++  fontCondensed: ReactPropTypes.bool,
+   fontFamily: ReactPropTypes.string,
+   fontSize: ReactPropTypes.number,
+   fontStyle: ReactPropTypes.oneOf(['normal', 'italic']),
+diff --git a/node_modules/react-native/Libraries/Text/VirtualText/RCTVirtualTextViewManager.m b/node_modules/react-native/Libraries/Text/VirtualText/RCTVirtualTextViewManager.m
+index 48eec5f..94126f7 100644
+--- a/node_modules/react-native/Libraries/Text/VirtualText/RCTVirtualTextViewManager.m
++++ b/node_modules/react-native/Libraries/Text/VirtualText/RCTVirtualTextViewManager.m
+@@ -13,6 +13,11 @@ @implementation RCTVirtualTextViewManager
+ 
+ RCT_EXPORT_MODULE(RCTVirtualText)
+ 
++RCT_CUSTOM_SHADOW_PROPERTY(fontCondensed, BOOL, RCTVirtualTextShadowView) {
++  view.textAttributes.fontCondensed = [NSNumber numberWithBool: [RCTConvert BOOL:json]];
++}
++
++
+ - (UIView *)view
+ {
+   return [UIView new];
+diff --git a/node_modules/react-native/React/Views/RCTFont.h b/node_modules/react-native/React/Views/RCTFont.h
+index 909f867..0fdb9c3 100644
+--- a/node_modules/react-native/React/Views/RCTFont.h
++++ b/node_modules/react-native/React/Views/RCTFont.h
+@@ -31,6 +31,7 @@ RCT_EXTERN BOOL RCTHasFontHandlerSet(void);
+             withFamily:(NSString *)family
+                   size:(NSNumber *)size
+                 weight:(NSString *)weight
++             condensed:(NSNumber *)condensed
+                  style:(NSString *)style
+                variant:(NSArray<NSString *> *)variant
+        scaleMultiplier:(CGFloat)scaleMultiplier;
+diff --git a/node_modules/react-native/React/Views/RCTFont.mm b/node_modules/react-native/React/Views/RCTFont.mm
+index e26fcd8..f256bd3 100644
+--- a/node_modules/react-native/React/Views/RCTFont.mm
++++ b/node_modules/react-native/React/Views/RCTFont.mm
+@@ -175,6 +175,7 @@ + (UIFont *)UIFont:(id)json
+                   withFamily:[RCTConvert NSString:json[@"fontFamily"]]
+                         size:[RCTConvert NSNumber:json[@"fontSize"]]
+                       weight:[RCTConvert NSString:json[@"fontWeight"]]
++                   condensed:[RCTConvert NSNumber:json[@"fontCondensed"]]
+                        style:[RCTConvert NSString:json[@"fontStyle"]]
+                      variant:[RCTConvert NSStringArray:json[@"fontVariant"]]
+              scaleMultiplier:1];
+@@ -248,6 +249,7 @@ + (UIFont *)updateFont:(UIFont *)font
+             withFamily:(NSString *)family
+                   size:(NSNumber *)size
+                 weight:(NSString *)weight
++             condensed:(NSNumber *)condensed
+                  style:(NSString *)style
+                variant:(NSArray<RCTFontVariantDescriptor *> *)variant
+        scaleMultiplier:(CGFloat)scaleMultiplier
+@@ -284,6 +286,7 @@ + (UIFont *)updateFont:(UIFont *)font
+   familyName = [RCTConvert NSString:family] ?: familyName;
+   isItalic = style ? [RCTConvert RCTFontStyle:style] : isItalic;
+   fontWeight = weight ? [RCTConvert RCTFontWeight:weight] : fontWeight;
++  isCondensed = condensed ? [RCTConvert BOOL:condensed] : isCondensed;
+ 
+   BOOL didFindFont = NO;
+ 
+@@ -319,7 +322,7 @@ + (UIFont *)updateFont:(UIFont *)font
+       familyName = font.familyName;
+       fontWeight = weight ? fontWeight : weightOfFont(font);
+       isItalic = style ? isItalic : isItalicFont(font);
+-      isCondensed = isCondensedFont(font);
++      isCondensed = condensed ? isCondensed : isCondensedFont(font);
+     } else {
+       // Not a valid font or family
+       RCTLogError(@"Unrecognized font family '%@'", familyName);
+@@ -370,22 +373,22 @@ + (UIFont *)updateFont:(UIFont *)font
+ 
+ + (UIFont *)updateFont:(UIFont *)font withFamily:(NSString *)family
+ {
+-  return [self updateFont:font withFamily:family size:nil weight:nil style:nil variant:nil scaleMultiplier:1];
++  return [self updateFont:font withFamily:family size:nil weight:nil condensed:nil style:nil variant:nil scaleMultiplier:1];
+ }
+ 
+ + (UIFont *)updateFont:(UIFont *)font withSize:(NSNumber *)size
+ {
+-  return [self updateFont:font withFamily:nil size:size weight:nil style:nil variant:nil scaleMultiplier:1];
++  return [self updateFont:font withFamily:nil size:size weight:nil condensed:nil style:nil variant:nil scaleMultiplier:1];
+ }
+ 
+ + (UIFont *)updateFont:(UIFont *)font withWeight:(NSString *)weight
+ {
+-  return [self updateFont:font withFamily:nil size:nil weight:weight style:nil variant:nil scaleMultiplier:1];
++  return [self updateFont:font withFamily:nil size:nil weight:weight condensed:nil style:nil variant:nil scaleMultiplier:1];
+ }
+ 
+ + (UIFont *)updateFont:(UIFont *)font withStyle:(NSString *)style
+ {
+-  return [self updateFont:font withFamily:nil size:nil weight:nil style:style variant:nil scaleMultiplier:1];
++  return [self updateFont:font withFamily:nil size:nil weight:nil condensed:nil style:style variant:nil scaleMultiplier:1];
+ }
+ 
+ @end

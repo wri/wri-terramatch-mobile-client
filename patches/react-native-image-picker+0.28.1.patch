@@ -1,0 +1,33 @@
+diff --git a/node_modules/react-native-image-picker/ios/ImagePickerManager.m b/node_modules/react-native-image-picker/ios/ImagePickerManager.m
+index 28d5870..8c060b1 100644
+--- a/node_modules/react-native-image-picker/ios/ImagePickerManager.m
++++ b/node_modules/react-native-image-picker/ios/ImagePickerManager.m
+@@ -456,7 +456,7 @@ - (void)imagePickerController:(UIImagePickerController *)picker didFinishPicking
+ 
+                 if (videoURL) { // Protect against reported crash
+                   NSError *error = nil;
+-                  [fileManager moveItemAtURL:videoURL toURL:videoDestinationURL error:&error];
++                  [fileManager copyItemAtURL:videoURL toURL:videoDestinationURL error:&error];
+                   if (error) {
+                       self.callback(@[@{@"error": error.localizedFailureReason}]);
+                       return;
+diff --git a/node_modules/react-native-image-picker/ios/RNImagePicker.xcodeproj/xcuserdata/kiriegington.xcuserdatad/xcschemes/xcschememanagement.plist b/node_modules/react-native-image-picker/ios/RNImagePicker.xcodeproj/xcuserdata/kiriegington.xcuserdatad/xcschemes/xcschememanagement.plist
+new file mode 100644
+index 0000000..be14221
+--- /dev/null
++++ b/node_modules/react-native-image-picker/ios/RNImagePicker.xcodeproj/xcuserdata/kiriegington.xcuserdatad/xcschemes/xcschememanagement.plist
+@@ -0,0 +1,14 @@
++<?xml version="1.0" encoding="UTF-8"?>
++<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
++<plist version="1.0">
++<dict>
++	<key>SchemeUserState</key>
++	<dict>
++		<key>RNImagePicker.xcscheme_^#shared#^_</key>
++		<dict>
++			<key>orderHint</key>
++			<integer>64</integer>
++		</dict>
++	</dict>
++</dict>
++</plist>

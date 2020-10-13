@@ -1,0 +1,40 @@
+rootProject.name = 'wri-restoration-marketplace-android-client'
+
+include ':app'
+include ':react-native-community-netinfo'
+include ':react-native-community-slider'
+include ':react-native-config'
+include ':react-native-device-info'
+include ':react-native-document-picker'
+include ':react-native-firebase'
+include ':react-native-fs'
+include ':react-native-image-picker'
+include ':react-native-localize'
+include ':react-native-navigation'
+include ':react-native-sentry'
+include ':react-native-video'
+include ':react-native-webview'
+include ':@react-native-community_async-storage'
+include ':@react-native-community_datetimepicker'
+include ':@react-native-mapbox-gl_maps'
+include ':react-native-file-viewer'
+include ':react-native-video-processing'
+
+project(':react-native-file-viewer').projectDir = new File(rootProject.projectDir, 	'../node_modules/react-native-file-viewer/android')
+project(':react-native-community-slider').projectDir = new File(rootProject.projectDir, '../node_modules/@react-native-community/slider/android')
+project(':react-native-config').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-config/android')
+project(':react-native-device-info').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-device-info/android')
+project(':react-native-document-picker').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-document-picker/android')
+project(':react-native-firebase').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-firebase/android')
+project(':react-native-fs').projectDir = new File(settingsDir, '../node_modules/react-native-fs/android')
+project(':react-native-image-picker').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-image-picker/android')
+project(':react-native-localize').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-localize/android')
+project(':react-native-navigation').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-navigation/lib/android/app/')
+project(':react-native-sentry').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-sentry/android')
+project(':react-native-video').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-video/android')
+project(':react-native-webview').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-webview/android')
+project(':@react-native-community_async-storage').projectDir = new File(rootProject.projectDir, '../node_modules/@react-native-community/async-storage/android')
+project(':@react-native-community_datetimepicker').projectDir = new File(rootProject.projectDir, '../node_modules/@react-native-community/datetimepicker/android')
+project(':react-native-community-netinfo').projectDir = new File(rootProject.projectDir, '../node_modules/@react-native-community/netinfo/android')
+project(':@react-native-mapbox-gl_maps').projectDir = new File(rootProject.projectDir, '../node_modules/@react-native-mapbox-gl/maps/android/rctmgl')
+project(':react-native-video-processing').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-video-processing/android')

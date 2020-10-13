@@ -1,0 +1,16 @@
+<resources>
+
+    <style name="MenuItemTextAppearance" parent="@style/TextAppearance.AppCompat.Widget.ActionBar.Menu">
+        <item name="textAllCaps">false</item>
+    </style>
+
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <!-- Customize your theme here. -->
+
+        <item name="actionMenuTextAppearance">@style/MenuItemTextAppearance</item>
+        
+        <!-- See https://github.com/facebook/react-native/issues/17530#issuecomment-504044357 -->
+        <item name="android:editTextBackground">@android:color/transparent</item>
+    </style>
+</resources>

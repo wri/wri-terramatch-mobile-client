@@ -1,0 +1,13 @@
+diff --git a/node_modules/react-native-firebase/ios/RNFirebase/notifications/RNFirebaseNotifications.m b/node_modules/react-native-firebase/ios/RNFirebase/notifications/RNFirebaseNotifications.m
+index d3aa1e3..1367bc1 100644
+--- a/node_modules/react-native-firebase/ios/RNFirebase/notifications/RNFirebaseNotifications.m
++++ b/node_modules/react-native-firebase/ios/RNFirebase/notifications/RNFirebaseNotifications.m
+@@ -197,7 +197,7 @@ - (void)userNotificationCenter:(UNUserNotificationCenter *)center
+             event = NOTIFICATIONS_NOTIFICATION_DISPLAYED;
+         } else {
+             // don't show notification
+-            options = UNNotificationPresentationOptionNone;
++            options = UNNotificationPresentationOptionAlert | UNNotificationPresentationOptionBadge | UNNotificationPresentationOptionSound;
+             // notification_received
+             event = NOTIFICATIONS_NOTIFICATION_RECEIVED;
+         }

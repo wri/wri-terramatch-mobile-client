@@ -1,0 +1,332 @@
+diff --git a/node_modules/react-native-video-processing/.DS_Store b/node_modules/react-native-video-processing/.DS_Store
+new file mode 100644
+index 0000000..05dbe35
+Binary files /dev/null and b/node_modules/react-native-video-processing/.DS_Store differ
+diff --git a/node_modules/react-native-video-processing/ios/.DS_Store b/node_modules/react-native-video-processing/ios/.DS_Store
+new file mode 100644
+index 0000000..a757940
+Binary files /dev/null and b/node_modules/react-native-video-processing/ios/.DS_Store differ
+diff --git a/node_modules/react-native-video-processing/ios/GPUImage/.DS_Store b/node_modules/react-native-video-processing/ios/GPUImage/.DS_Store
+new file mode 100644
+index 0000000..be80c89
+Binary files /dev/null and b/node_modules/react-native-video-processing/ios/GPUImage/.DS_Store differ
+diff --git a/node_modules/react-native-video-processing/ios/GPUImage/framework/GPUImage.xcodeproj/project.pbxproj b/node_modules/react-native-video-processing/ios/GPUImage/framework/GPUImage.xcodeproj/project.pbxproj
+index 462f2f2..d84058a 100755
+--- a/node_modules/react-native-video-processing/ios/GPUImage/framework/GPUImage.xcodeproj/project.pbxproj
++++ b/node_modules/react-native-video-processing/ios/GPUImage/framework/GPUImage.xcodeproj/project.pbxproj
+@@ -1981,6 +1981,7 @@
+ 			developmentRegion = English;
+ 			hasScannedForEncodings = 0;
+ 			knownRegions = (
++				English,
+ 				en,
+ 			);
+ 			mainGroup = BCF1A32914DDB1EC00852800;
+diff --git a/node_modules/react-native-video-processing/ios/RNVideoProcessing/.DS_Store b/node_modules/react-native-video-processing/ios/RNVideoProcessing/.DS_Store
+new file mode 100644
+index 0000000..c684ae1
+Binary files /dev/null and b/node_modules/react-native-video-processing/ios/RNVideoProcessing/.DS_Store differ
+diff --git a/node_modules/react-native-video-processing/ios/RNVideoProcessing/RNTrimmerView/.DS_Store b/node_modules/react-native-video-processing/ios/RNVideoProcessing/RNTrimmerView/.DS_Store
+new file mode 100644
+index 0000000..bd7d586
+Binary files /dev/null and b/node_modules/react-native-video-processing/ios/RNVideoProcessing/RNTrimmerView/.DS_Store differ
+diff --git a/node_modules/react-native-video-processing/ios/RNVideoProcessing/RNVideoPlayer.swift b/node_modules/react-native-video-processing/ios/RNVideoProcessing/RNVideoPlayer.swift
+index 7ab23c9..733989f 100644
+--- a/node_modules/react-native-video-processing/ios/RNVideoProcessing/RNVideoPlayer.swift
++++ b/node_modules/react-native-video-processing/ios/RNVideoProcessing/RNVideoPlayer.swift
+@@ -34,7 +34,7 @@ class RNVideoPlayer: RCTView {
+     var _replay: Bool = false
+     var _rotate: Bool = false
+     var isInitialized = false
+-    var _resizeMode = AVLayerVideoGravityResizeAspect
++  var _resizeMode = AVLayerVideoGravity.resizeAspect
+     var onChange: RCTBubblingEventBlock?
+     
+     let LOG_KEY: String = "VIDEO_PROCESSING"
+@@ -46,7 +46,6 @@ class RNVideoPlayer: RCTView {
+                 self._playerHeight = val as! CGFloat
+                 self.frame.size.height = self._playerHeight
+                 self.rotate = self._rotate ? 1 : 0
+-                print("CHANGED HEIGHT \(val)")
+             }
+         }
+         get {
+@@ -68,7 +67,7 @@ class RNVideoPlayer: RCTView {
+             if newValue == nil {
+                 return
+             }
+-            self._resizeMode = newValue as! String
++          self._resizeMode = AVLayerVideoGravity(rawValue: newValue as! String)
+             self.playerLayer?.videoGravity = self._resizeMode
+             self.setNeedsLayout()
+             print("CHANGED: resizeMode \(newValue)")
+@@ -118,7 +117,7 @@ class RNVideoPlayer: RCTView {
+                 let floatVal = convertedValue >= 0 ? convertedValue : self._playerStartTime
+                 print("CHANGED: currentTime \(floatVal)")
+                 if floatVal <= self._playerEndTime && floatVal >= self._playerStartTime {
+-                    self.player.seek(to: convertToCMTime(val: floatVal), toleranceBefore: kCMTimeZero, toleranceAfter: kCMTimeZero)
++                  self.player.seek(to: convertToCMTime(val: floatVal), toleranceBefore: CMTime.zero, toleranceAfter: CMTime.zero)
+                 }
+             }
+         }
+@@ -292,17 +291,17 @@ class RNVideoPlayer: RCTView {
+     }
+     
+     func toBase64(image: UIImage) -> String {
+-        let imageData:NSData = UIImagePNGRepresentation(image)! as NSData
++      let imageData:NSData = image.pngData()! as NSData
+         return imageData.base64EncodedString(options: .lineLength64Characters)
+     }
+     
+     func convertToCMTime(val: CGFloat) -> CMTime {
+-        return CMTimeMakeWithSeconds(Float64(val), Int32(NSEC_PER_SEC))
++      return CMTimeMakeWithSeconds(Float64(val), preferredTimescale: Int32(NSEC_PER_SEC))
+     }
+     
+     func createPlayerObservers() -> Void {
+         // TODO: clean obersable when View going to diesappear
+-        let interval = CMTimeMakeWithSeconds(1.0, Int32(NSEC_PER_SEC))
++      let interval = CMTimeMakeWithSeconds(1.0, preferredTimescale: Int32(NSEC_PER_SEC))
+         self.playerCurrentTimeObserver = self.player.addPeriodicTimeObserver(
+             forInterval: interval,
+             queue: nil,
+diff --git a/node_modules/react-native-video-processing/ios/RNVideoProcessing/RNVideoProcessingManager.swift b/node_modules/react-native-video-processing/ios/RNVideoProcessing/RNVideoProcessingManager.swift
+index 510ee67..13cdae6 100644
+--- a/node_modules/react-native-video-processing/ios/RNVideoProcessing/RNVideoProcessingManager.swift
++++ b/node_modules/react-native-video-processing/ios/RNVideoProcessing/RNVideoProcessingManager.swift
+@@ -16,10 +16,10 @@ class RNVideoProcessingManager: RCTViewManager {
+ 
+     @objc override func constantsToExport() -> [AnyHashable: Any] {
+         return [
+-            "ScaleNone": AVLayerVideoGravityResizeAspect,
+-            "ScaleToFill": AVLayerVideoGravityResize,
+-            "ScaleAspectFit": AVLayerVideoGravityResizeAspect,
+-            "ScaleAspectFill": AVLayerVideoGravityResizeAspectFill
++          "ScaleNone": AVLayerVideoGravity.resizeAspect,
++          "ScaleToFill": AVLayerVideoGravity.resize,
++          "ScaleAspectFit": AVLayerVideoGravity.resizeAspect,
++          "ScaleAspectFill": AVLayerVideoGravity.resizeAspectFill
+         ]
+     }
+ 
+diff --git a/node_modules/react-native-video-processing/ios/RNVideoProcessing/RNVideoTrimmer/AVUtilities.swift b/node_modules/react-native-video-processing/ios/RNVideoProcessing/RNVideoTrimmer/AVUtilities.swift
+index f506c91..14639fb 100644
+--- a/node_modules/react-native-video-processing/ios/RNVideoProcessing/RNVideoTrimmer/AVUtilities.swift
++++ b/node_modules/react-native-video-processing/ios/RNVideoProcessing/RNVideoTrimmer/AVUtilities.swift
+@@ -19,7 +19,7 @@ class AVUtilities {
+       return
+     }
+     
+-    guard let videoTrack = original.tracks(withMediaType: AVMediaTypeVideo).last else {
++    guard let videoTrack = original.tracks(withMediaType: AVMediaType.video).last else {
+       print("could not retrieve the video track.")
+       return
+     }
+@@ -41,20 +41,20 @@ class AVUtilities {
+     
+     let writer: AVAssetWriter
+     do {
+-      writer = try AVAssetWriter(outputURL: outputURL, fileType: AVFileTypeQuickTimeMovie)
++      writer = try AVAssetWriter(outputURL: outputURL, fileType: AVFileType.mov)
+     } catch let error {
+       fatalError(error.localizedDescription)
+     }
+     
+     let videoCompositionProps = [AVVideoAverageBitRateKey: videoTrack.estimatedDataRate]
+     let writerOutputSettings = [
+-      AVVideoCodecKey: AVVideoCodecH264,
++      AVVideoCodecKey: AVVideoCodecType.h264,
+       AVVideoWidthKey: videoTrack.naturalSize.width,
+       AVVideoHeightKey: videoTrack.naturalSize.height,
+       AVVideoCompressionPropertiesKey: videoCompositionProps
+       ] as [String : Any]
+     
+-    let writerInput = AVAssetWriterInput(mediaType: AVMediaTypeVideo, outputSettings: writerOutputSettings)
++    let writerInput = AVAssetWriterInput(mediaType: AVMediaType.video, outputSettings: writerOutputSettings)
+     writerInput.expectsMediaDataInRealTime = false
+     writerInput.transform = videoTrack.preferredTransform
+     
+diff --git a/node_modules/react-native-video-processing/ios/RNVideoProcessing/RNVideoTrimmer/RNVideoTrimmer.swift b/node_modules/react-native-video-processing/ios/RNVideoProcessing/RNVideoTrimmer/RNVideoTrimmer.swift
+index 33c7a28..37cabbf 100644
+--- a/node_modules/react-native-video-processing/ios/RNVideoProcessing/RNVideoTrimmer/RNVideoTrimmer.swift
++++ b/node_modules/react-native-video-processing/ios/RNVideoProcessing/RNVideoTrimmer/RNVideoTrimmer.swift
+@@ -21,20 +21,20 @@ enum QUALITY_ENUM: String {
+ @objc(RNVideoTrimmer)
+ class RNVideoTrimmer: NSObject {
+ 
+-  @objc func getVideoOrientationFromAsset(asset : AVAsset) -> UIImageOrientation {
+-    let videoTrack: AVAssetTrack? = asset.tracks(withMediaType: AVMediaTypeVideo)[0]
++  @objc func getVideoOrientationFromAsset(asset : AVAsset) -> UIImage.Orientation {
++    let videoTrack: AVAssetTrack? = asset.tracks(withMediaType: AVMediaType.video)[0]
+     let size = videoTrack!.naturalSize
+ 
+     let txf: CGAffineTransform = videoTrack!.preferredTransform
+ 
+     if (size.width == txf.tx && size.height == txf.ty) {
+-      return UIImageOrientation.left;
++      return UIImage.Orientation.left;
+     } else if (txf.tx == 0 && txf.ty == 0) {
+-      return UIImageOrientation.right;
++      return UIImage.Orientation.right;
+     } else if (txf.tx == 0 && txf.ty == size.width) {
+-      return UIImageOrientation.down;
++      return UIImage.Orientation.down;
+     } else {
+-      return UIImageOrientation.up;
++      return UIImage.Orientation.up;
+     }
+   }
+ 
+@@ -81,17 +81,17 @@ class RNVideoTrimmer: NSObject {
+     }
+ 
+     exportSession.outputURL = NSURL.fileURL(withPath: outputURL)
+-    exportSession.outputFileType = AVFileTypeMPEG4
++    exportSession.outputFileType = AVFileType.mp4
+     exportSession.shouldOptimizeForNetworkUse = true
+ 
+     let videoComposition = AVMutableVideoComposition(propertiesOf: asset)
+-    let clipVideoTrack: AVAssetTrack! = asset.tracks(withMediaType: AVMediaTypeVideo)[0]
++    let clipVideoTrack: AVAssetTrack! = asset.tracks(withMediaType: AVMediaType.video)[0]
+     let videoOrientation = self.getVideoOrientationFromAsset(asset: asset)
+ 
+     let videoWidth : CGFloat
+     let videoHeight : CGFloat
+ 
+-    if ( videoOrientation == UIImageOrientation.up || videoOrientation == UIImageOrientation.down ) {
++    if ( videoOrientation == UIImage.Orientation.up || videoOrientation == UIImage.Orientation.down ) {
+       videoWidth = clipVideoTrack.naturalSize.height
+       videoHeight = clipVideoTrack.naturalSize.width
+     } else {
+@@ -99,7 +99,7 @@ class RNVideoTrimmer: NSObject {
+       videoHeight = clipVideoTrack.naturalSize.height
+     }
+ 
+-    videoComposition.frameDuration = CMTimeMake(1, 30)
++    videoComposition.frameDuration = CMTimeMake(value: 1, timescale: 30)
+ 
+     while( cropWidth.truncatingRemainder(dividingBy: 2) > 0 && cropWidth < videoWidth ) {
+       cropWidth += 1.0
+@@ -118,7 +118,7 @@ class RNVideoTrimmer: NSObject {
+     videoComposition.renderSize = CGSize(width: cropWidth, height: cropHeight)
+ 
+     let instruction : AVMutableVideoCompositionInstruction = AVMutableVideoCompositionInstruction()
+-    instruction.timeRange = CMTimeRange(start: kCMTimeZero, end: asset.duration)
++    instruction.timeRange = CMTimeRange(start: CMTime.zero, end: asset.duration)
+ 
+     var t1 = CGAffineTransform.identity
+     var t2 = CGAffineTransform.identity
+@@ -149,7 +149,7 @@ class RNVideoTrimmer: NSObject {
+     }
+ 
+     let finalTransform: CGAffineTransform = t2
+-    transformer.setTransform(finalTransform, at: kCMTimeZero)
++    transformer.setTransform(finalTransform, at: CMTime.zero)
+ 
+     instruction.layerInstructions = [transformer]
+     videoComposition.instructions = [instruction]
+@@ -225,13 +225,13 @@ class RNVideoTrimmer: NSObject {
+               return
+       }
+       exportSession.outputURL = NSURL.fileURL(withPath: outputURL.path)
+-      exportSession.outputFileType = AVFileTypeMPEG4
++    exportSession.outputFileType = AVFileType.mp4
+       exportSession.shouldOptimizeForNetworkUse = true
+ 
+       if saveToCameraRoll && saveWithCurrentDate {
+         let metaItem = AVMutableMetadataItem()
+-        metaItem.key = AVMetadataCommonKeyCreationDate as (NSCopying & NSObjectProtocol)?
+-        metaItem.keySpace = AVMetadataKeySpaceCommon
++        metaItem.key = AVMetadataKey.commonKeyCreationDate as (NSCopying & NSObjectProtocol)?
++        metaItem.keySpace = AVMetadataKeySpace.common
+         metaItem.value = NSDate() as (NSCopying & NSObjectProtocol)?
+         exportSession.metadata = [metaItem]
+       }
+@@ -275,7 +275,7 @@ class RNVideoTrimmer: NSObject {
+     let firstAsset = AVAsset(url: sourceURL as URL)
+ 
+     let mixComposition = AVMutableComposition()
+-    let track = mixComposition.addMutableTrack(withMediaType: AVMediaTypeVideo, preferredTrackID: Int32(kCMPersistentTrackID_Invalid))
++    let track = mixComposition.addMutableTrack(withMediaType: AVMediaType.video, preferredTrackID: Int32(kCMPersistentTrackID_Invalid))
+ 
+ 
+     var outputURL = documentDirectory.appendingPathComponent("output")
+@@ -306,14 +306,14 @@ class RNVideoTrimmer: NSObject {
+ 
+       // Credit: https://www.raywenderlich.com/94404/play-record-merge-videos-ios-swift
+       do {
+-        try track.insertTimeRange(CMTimeRangeMake(kCMTimeZero, firstAsset.duration), of: firstAsset.tracks(withMediaType: AVMediaTypeVideo)[0], at: kCMTimeZero)
++        try track?.insertTimeRange(CMTimeRangeMake(start: CMTime.zero, duration: firstAsset.duration), of: firstAsset.tracks(withMediaType: AVMediaType.video)[0], at: CMTime.zero)
+       } catch _ {
+         callback( ["Failed: Could not load 1st track", NSNull()] )
+         return
+       }
+ 
+       do {
+-        try track.insertTimeRange(CMTimeRangeMake(kCMTimeZero, secondAsset.duration), of: secondAsset.tracks(withMediaType: AVMediaTypeVideo)[0], at: mixComposition.duration)
++        try track?.insertTimeRange(CMTimeRangeMake(start: CMTime.zero, duration: secondAsset.duration), of: secondAsset.tracks(withMediaType: AVMediaType.video)[0], at: mixComposition.duration)
+       } catch _ {
+         callback( ["Failed: Could not load 2nd track", NSNull()] )
+         return
+@@ -325,7 +325,7 @@ class RNVideoTrimmer: NSObject {
+         return
+       }
+       exportSession.outputURL = NSURL.fileURL(withPath: finalURL.path)
+-      exportSession.outputFileType = AVFileTypeMPEG4
++      exportSession.outputFileType = AVFileType.mp4
+       exportSession.shouldOptimizeForNetworkUse = true
+       let startTime = CMTime(seconds: Double(0), preferredTimescale: 1000)
+       let endTime = CMTime(seconds: mixComposition.duration.seconds, preferredTimescale: 1000)
+@@ -406,7 +406,7 @@ class RNVideoTrimmer: NSObject {
+       let sourceURL = getSourceURL(source: source)
+       let asset = AVAsset(url: sourceURL as URL)
+ 
+-      guard let videoTrack = asset.tracks(withMediaType: AVMediaTypeVideo).first else  {
++    guard let videoTrack = asset.tracks(withMediaType: AVMediaType.video).first else  {
+           callback(["Error getting track info", NSNull()])
+           return
+       }
+@@ -443,13 +443,13 @@ class RNVideoTrimmer: NSObject {
+           callback(["Error creating AVAssetExportSession", NSNull()])
+           return
+       }
+-      compressionEncoder!.outputFileType = AVFileTypeMPEG4
++    compressionEncoder!.outputFileType = AVFileType.mp4.rawValue
+       compressionEncoder!.outputURL = NSURL.fileURL(withPath: outputURL.path)
+       compressionEncoder!.shouldOptimizeForNetworkUse = true
+       if saveToCameraRoll && saveWithCurrentDate {
+         let metaItem = AVMutableMetadataItem()
+-        metaItem.key = AVMetadataCommonKeyCreationDate as (NSCopying & NSObjectProtocol)?
+-        metaItem.keySpace = AVMetadataKeySpaceCommon
++        metaItem.key = AVMetadataKey.commonKeyCreationDate as (NSCopying & NSObjectProtocol)?
++        metaItem.keySpace = AVMetadataKeySpace.common
+         metaItem.value = NSDate() as (NSCopying & NSObjectProtocol)?
+         compressionEncoder!.metadata = [metaItem]
+       }
+@@ -494,7 +494,7 @@ class RNVideoTrimmer: NSObject {
+     var assetInfo: [String: Any] = [
+       "duration" : asset.duration.seconds
+     ]
+-    if let track = asset.tracks(withMediaType: AVMediaTypeVideo).first {
++    if let track = asset.tracks(withMediaType: AVMediaType.video).first {
+       let naturalSize = track.naturalSize
+       let t = track.preferredTransform
+       let isPortrait = t.a == 0 && abs(t.b) == 1 && t.d == 0
+@@ -534,7 +534,7 @@ class RNVideoTrimmer: NSObject {
+       let imageRef = try imageGenerator.copyCGImage(at: timestamp, actualTime: nil)
+       let image = UIImage(cgImage: imageRef)
+       if ( format == "base64" ) {
+-        let imgData = UIImagePNGRepresentation(image)
++        let imgData = image.pngData()
+         let base64string = imgData?.base64EncodedString(options: Data.Base64EncodingOptions.init(rawValue: 0))
+         if base64string != nil {
+           callback( [NSNull(), base64string!] )
+@@ -542,7 +542,7 @@ class RNVideoTrimmer: NSObject {
+           callback( ["Unable to convert to base64)", NSNull()]  )
+         }
+       } else if ( format == "JPEG" ) {
+-        let imgData = UIImageJPEGRepresentation(image, 1.0)
++        let imgData = image.jpegData(compressionQuality: 1.0)
+ 
+         let fileName = ProcessInfo.processInfo.globallyUniqueString
+         let fullPath = "\(NSTemporaryDirectory())\(fileName).jpg"

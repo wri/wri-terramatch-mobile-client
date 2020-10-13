@@ -1,0 +1,26 @@
+diff --git a/node_modules/wri-api/src/ApiClient.js b/node_modules/wri-api/src/ApiClient.js
+index 92e3749..b51bc85 100644
+--- a/node_modules/wri-api/src/ApiClient.js
++++ b/node_modules/wri-api/src/ApiClient.js
+@@ -354,7 +354,7 @@ export class ApiClient {
+             data = response.text;
+         }
+ 
+-        return ApiClient.convertToType(data, returnType);
++        return ApiClient.convertToType(data?.data, returnType);
+     }
+ 
+
+diff --git a/node_modules/wri-api/src/model/DraftUpdateInner.js b/node_modules/wri-api/src/model/DraftUpdateInner.js
+index 7eb5b91..a18927b 100644
+--- a/node_modules/wri-api/src/model/DraftUpdateInner.js
++++ b/node_modules/wri-api/src/model/DraftUpdateInner.js
+@@ -44,7 +44,7 @@ export class DraftUpdateInner {
+       if (data.hasOwnProperty('path'))
+         obj.path = ApiClient.convertToType(data['path'], 'String');
+       if (data.hasOwnProperty('value'))
+-        obj.value = ApiClient.convertToType(data['value'], 'String');
++        obj.value = ApiClient.convertToType(data['value'], 'Blob');
+     }
+     return obj;
+   }

@@ -1,0 +1,10 @@
+# For a quick start check out our HTTP Requests collection (Tools|HTTP Client|Open HTTP Requests Collection) or
+# paste cURL into the file and request will be converted to HTTP Request format.
+#
+# Following HTTP Request Live Templates are available:
+# * 'gtrp' and 'gtr' create a GET request with or without query parameters;
+# * 'ptr' and 'ptrp' create a POST request with a simple or parameter-like body;
+# * 'mptr' and 'fptr' create a POST request to submit a form with a text or file field (multipart/form-data);
+https://test.wrirestorationmarketplace.cubeapis.com/api/auth/me
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC90ZXN0LndyaXJlc3RvcmF0aW9ubWFya2V0cGxhY2UuY3ViZWFwaXMuY29tXC9hcGlcL2F1dGhcL2xvZ2luIiwiaWF0IjoxNTcwNTQ5NjYxLCJleHAiOjE1NzA1OTI4NjEsIm5iZiI6MTU3MDU0OTY2MSwianRpIjoiTk9YdjVPallwTTRsYmljQiIsInN1YiI6IjQ3IiwicHJ2IjoiMjNiZDVjODk0OWY2MDBhZGIzOWU3MDFjNDAwODcyZGI3YTU5NzZmNyJ9.GLbDCG8-O6BdJDX3--XUMeZkOkiyYM8ti2f_gfYIbHg
+###

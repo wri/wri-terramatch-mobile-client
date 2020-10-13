@@ -1,0 +1,155 @@
+{
+  "project_info": {
+    "project_number": "573734343756",
+    "firebase_url": "https://wri-restoration-marketplace.firebaseio.com",
+    "project_id": "wri-restoration-marketplace",
+    "storage_bucket": "wri-restoration-marketplace.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:573734343756:android:29aed49f24615f0732d0e9",
+        "android_client_info": {
+          "package_name": "com.cube.wri.rm"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "573734343756-5ber90901qvftj4ntm44sdutplhi4p9g.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCrJN2r5-lNCrKymzdDaMjpma8tZ6HhDnQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "573734343756-5ber90901qvftj4ntm44sdutplhi4p9g.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "573734343756-dol1tdbeeh82s70t9lr6aklug0t3a8v1.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "org.wri.restorationmarketplace"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:573734343756:android:575945c89759940232d0e9",
+        "android_client_info": {
+          "package_name": "com.cube.wri.rm.dev"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "573734343756-5ber90901qvftj4ntm44sdutplhi4p9g.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCrJN2r5-lNCrKymzdDaMjpma8tZ6HhDnQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "573734343756-5ber90901qvftj4ntm44sdutplhi4p9g.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "573734343756-dol1tdbeeh82s70t9lr6aklug0t3a8v1.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "org.wri.restorationmarketplace"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:573734343756:android:1ba1739f359d51d032d0e9",
+        "android_client_info": {
+          "package_name": "com.cube.wri.rm.staging"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "573734343756-5ber90901qvftj4ntm44sdutplhi4p9g.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCrJN2r5-lNCrKymzdDaMjpma8tZ6HhDnQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "573734343756-5ber90901qvftj4ntm44sdutplhi4p9g.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "573734343756-dol1tdbeeh82s70t9lr6aklug0t3a8v1.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "org.wri.restorationmarketplace"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:573734343756:android:0be6e64e374f613432d0e9",
+        "android_client_info": {
+          "package_name": "com.cube.wri.rm.test"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "573734343756-5ber90901qvftj4ntm44sdutplhi4p9g.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCrJN2r5-lNCrKymzdDaMjpma8tZ6HhDnQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "573734343756-5ber90901qvftj4ntm44sdutplhi4p9g.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "573734343756-dol1tdbeeh82s70t9lr6aklug0t3a8v1.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "org.wri.restorationmarketplace"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

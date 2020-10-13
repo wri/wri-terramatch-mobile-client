@@ -1,0 +1,18 @@
+diff --git a/node_modules/react-native-video/ios/Video/RCTVideo.m b/node_modules/react-native-video/ios/Video/RCTVideo.m
+index 98cb073..86d1070 100644
+--- a/node_modules/react-native-video/ios/Video/RCTVideo.m
++++ b/node_modules/react-native-video/ios/Video/RCTVideo.m
+@@ -704,10 +704,10 @@ - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(N
+         if (!CGRectEqualToRect(oldRect, newRect)) {
+           if (CGRectEqualToRect(newRect, [UIScreen mainScreen].bounds)) {
+             NSLog(@"in fullscreen");
+-          } else NSLog(@"not fullscreen");
+ 
+-          [self.reactViewController.view setFrame:[UIScreen mainScreen].bounds];
+-          [self.reactViewController.view setNeedsLayout];
++            [self.reactViewController.view setFrame:[UIScreen mainScreen].bounds];
++            [self.reactViewController.view setNeedsLayout];
++          } else NSLog(@"not fullscreen");
+         }
+ 
+         return;

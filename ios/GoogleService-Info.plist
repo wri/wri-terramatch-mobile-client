@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>573734343756-dol1tdbeeh82s70t9lr6aklug0t3a8v1.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.573734343756-dol1tdbeeh82s70t9lr6aklug0t3a8v1</string>
+	<key>API_KEY</key>
+	<string>AIzaSyDILr5zEsRrDD0oaZasBDt12-23jDf4ZEI</string>
+	<key>GCM_SENDER_ID</key>
+	<string>573734343756</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>org.wri.restorationmarketplace</string>
+	<key>PROJECT_ID</key>
+	<string>wri-restoration-marketplace</string>
+	<key>STORAGE_BUCKET</key>
+	<string>wri-restoration-marketplace.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:573734343756:ios:a57e3deec30ece34</string>
+	<key>DATABASE_URL</key>
+	<string>https://wri-restoration-marketplace.firebaseio.com</string>
+</dict>
+</plist>

@@ -1,0 +1,77 @@
+diff --git a/node_modules/react-native-navigation/lib/ios/RCTHelpers.m b/node_modules/react-native-navigation/lib/ios/RCTHelpers.m
+index faf1578..cbc58d4 100644
+--- a/node_modules/react-native-navigation/lib/ios/RCTHelpers.m
++++ b/node_modules/react-native-navigation/lib/ios/RCTHelpers.m
+@@ -14,6 +14,7 @@ + (NSMutableDictionary *)textAttributesFromDictionary:(NSDictionary *)dictionary
+ 	NSString *weightKey = @"fontWeight";
+ 	NSString *sizeKey = @"fontSize";
+ 	NSString *styleKey = @"fontStyle";
++	NSString *condensedKey = @"fontCondensed";
+ 	NSString *shadowColourKey = @"shadowColor";
+ 	NSString *shadowOffsetKey = @"shadowOffset";
+ 	NSString *shadowBlurRadiusKey = @"shadowBlurRadius";
+@@ -24,6 +25,9 @@ + (NSMutableDictionary *)textAttributesFromDictionary:(NSDictionary *)dictionary
+ 		colorKey = [colorKey stringByReplacingCharactersInRange:NSMakeRange(0, 1) withString:[colorKey substringToIndex:1].capitalizedString];
+ 		colorKey = [NSString stringWithFormat:@"%@%@", prefix, colorKey];
+ 		
++		condensedKey = [condensedKey stringByReplacingCharactersInRange:NSMakeRange(0, 1) withString:[condensedKey substringToIndex:1].capitalizedString];
++		condensedKey = [NSString stringWithFormat:@"%@%@", prefix, condensedKey];
++		
+ 		familyKey = [familyKey stringByReplacingCharactersInRange:NSMakeRange(0, 1) withString:[familyKey substringToIndex:1].capitalizedString];
+ 		familyKey = [NSString stringWithFormat:@"%@%@", prefix, familyKey];
+ 		
+@@ -47,6 +51,7 @@ + (NSMutableDictionary *)textAttributesFromDictionary:(NSDictionary *)dictionary
+ 		
+ 		showShadowKey = [showShadowKey stringByReplacingCharactersInRange:NSMakeRange(0, 1) withString:[showShadowKey substringToIndex:1].capitalizedString];
+ 		showShadowKey = [NSString stringWithFormat:@"%@%@", prefix, showShadowKey];
++		
+ 	}
+ 	
+ 	NSShadow *shadow;
+@@ -116,7 +121,12 @@ + (NSMutableDictionary *)textAttributesFromDictionary:(NSDictionary *)dictionary
+ 		fontStyle = nil;
+ 	}
+ 	
+-	UIFont *font = [RCTFont updateFont:baseFont withFamily:fontFamily size:fontSize weight:fontWeight style:fontStyle variant:nil scaleMultiplier:1];
++	NSNumber *fontCondensed = dictionary[condensedKey];
++	if (![fontCondensed isKindOfClass:[NSNumber class]]) {
++		fontCondensed = nil;
++	}
++	
++	UIFont *font = [RCTFont updateFont:baseFont withFamily:fontFamily size:fontSize weight:fontWeight condensed:fontCondensed style:fontStyle variant:nil scaleMultiplier:1];
+ 	
+ 	if (font && (fontStyle || fontWeight || fontSize || fontFamily)) {
+ 		[textAttributes setObject:font forKey:NSFontAttributeName];
+diff --git a/node_modules/react-native-navigation/lib/ios/ReactNativeNavigation.m b/node_modules/react-native-navigation/lib/ios/ReactNativeNavigation.m
+index e681c2d..6323d4d 100644
+--- a/node_modules/react-native-navigation/lib/ios/ReactNativeNavigation.m
++++ b/node_modules/react-native-navigation/lib/ios/ReactNativeNavigation.m
+@@ -67,7 +67,7 @@ -(void)bootstrap:(NSURL *)jsCodeLocation launchOptions:(NSDictionary *)launchOpt
+ 
+ - (UIWindow *)initializeKeyWindow {
+ 	UIWindow* keyWindow = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
+-	keyWindow.backgroundColor = [UIColor whiteColor];
++	keyWindow.backgroundColor = [UIColor blackColor];
+ 	UIApplication.sharedApplication.delegate.window = keyWindow;
+ 	
+ 	return keyWindow;
+diff --git a/node_modules/react-native-navigation/lib/ios/ReactNativeNavigation.xcodeproj/xcuserdata/simonmitchell.xcuserdatad/xcschemes/xcschememanagement.plist b/node_modules/react-native-navigation/lib/ios/ReactNativeNavigation.xcodeproj/xcuserdata/simonmitchell.xcuserdatad/xcschemes/xcschememanagement.plist
+new file mode 100644
+index 0000000..605a03b
+--- /dev/null
++++ b/node_modules/react-native-navigation/lib/ios/ReactNativeNavigation.xcodeproj/xcuserdata/simonmitchell.xcuserdatad/xcschemes/xcschememanagement.plist
+@@ -0,0 +1,14 @@
++<?xml version="1.0" encoding="UTF-8"?>
++<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
++<plist version="1.0">
++<dict>
++	<key>SchemeUserState</key>
++	<dict>
++		<key>ReactNativeNavigation.xcscheme_^#shared#^_</key>
++		<dict>
++			<key>orderHint</key>
++			<integer>2</integer>
++		</dict>
++	</dict>
++</dict>
++</plist>
