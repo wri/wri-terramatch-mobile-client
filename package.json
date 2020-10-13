@@ -48,7 +48,7 @@
     "google-libphonenumber": "3.2.5",
     "i18next": "17.0.7",
     "intl": "1.2.5",
-    "lodash": "4.17.15",
+    "lodash": "4.17.19",
     "moment": "2.24.0",
     "prop-types": "15.7.2",
     "querystring": "0.2.0",
